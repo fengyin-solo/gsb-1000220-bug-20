@@ -28,6 +28,12 @@ class EntryPayload(BaseModel):
     remark: str | None = None
 
 
+class BatchPayload(BaseModel):
+    """批量排期提交的计划集合，每个元素是一条记录的字段集合。"""
+
+    items: list[dict[str, Any]] = Field(default_factory=list)
+
+
 
 class PlantEntry(BaseModel):
     """光伏电站明细结构。"""
