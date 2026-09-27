@@ -28,6 +28,22 @@ class EntryPayload(BaseModel):
     remark: str | None = None
 
 
+class BatchSchedulePayload(BaseModel):
+    """批量排期提交：batch_id 是幂等键，同一批次重复提交不会累加任务。"""
+
+    batch_id: str = Field(min_length=1)
+    plans: list[dict[str, Any]] = Field(default_factory=list)
+
+
+class BatchScheduleResult(BaseModel):
+    ok: bool
+    message: str
+    batch_id: str
+    duplicated: bool = False
+    created: list[dict[str, Any]] = Field(default_factory=list)
+    rejected: list[dict[str, Any]] = Field(default_factory=list)
+
+
 
 class PlantEntry(BaseModel):
     """光伏电站明细结构。"""

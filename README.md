@@ -74,3 +74,14 @@ npm run dev
   `backend/app/routers/<模块>.py`，业务规则在 `backend/app/services/<模块>.py`。
 - 列表接口统一返回 `{ items, total, page, size }`，动作接口统一返回 `{ ok, message }`。
 - 状态流转只允许在 `app/services` 里改，路由层不做业务判断。
+
+## 巡检排期规则
+
+巡检计划的排期判定统一收在 `backend/app/services/scheduling.py`，单条登记/编辑
+（`POST`/`PUT /api/inspection`）、批量排期（`POST /api/inspection/batch`）与轮次统计
+（`GET /api/inspection/stats`）共用同一套规则：
+
+- 日期范围：计划日期只能落在今天起 30 天内；
+- 站点上限：同一巡检站点同一天最多排 2 轮；
+- 缺陷数门槛：发现缺陷数达到 3 的站点当日可加排 1 轮「复检」，其余情况第三轮一律拦截；
+- 批量排期按 `batch_id` 幂等，同一批次重复提交不会累加任务。
